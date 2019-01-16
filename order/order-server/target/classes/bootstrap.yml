@@ -1,0 +1,19 @@
+
+spring:
+  application:
+    name: order
+  cloud:
+    config:
+      profile: test
+      discovery:
+        service-id: config
+        enabled: true
+  rabbitmq:
+    port: 5672
+    username: melodykke
+    password: Y223183q!
+logging:
+  level:
+    org.springframework.cloud.bus: debug
+
+
