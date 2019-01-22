@@ -1,0 +1,11 @@
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      profile: dev
+      discovery:
+        service-id: config
+        enabled: true
+

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -82,6 +83,37 @@ public class OrderServiceImpl implements OrderService {
             log.error("【订单服务】创建订单失败！ 返回result={}", result);
             throw new OrderException(ResultEnum.PARAM_ERROR);
         }
+    }
+
+    @Override
+    public OrderDTO orderFinish(String orderId) {
+
+        // 1. 根据orderId先查询订单
+        OrderMaster orderMaster = orderMasterMapper.selectByPrimaryKey(orderId);
+        if (orderMaster == null) {
+            throw new OrderException(ResultEnum.ORDER_NOT_EXIST);
+        }
+        // 2. 判断订单状态
+        if (orderMaster.getOrderStatus() != OrderEnum.NEW.getCode().byteValue()) {
+            throw new OrderException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        // 3. 修改订单状态为完结
+        orderMaster.setOrderStatus(OrderEnum.FINISHED.getCode().byteValue());
+        orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
+
+        // 查询订单详情
+        List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderId);
+
+        if (CollectionUtils.isEmpty(orderDetails)) {
+            throw new OrderException(ResultEnum.ORDER_DETAIL_NOT_EXIST);
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        BeanUtils.copyProperties(orderMaster, orderDTO);
+        orderDTO.setOrderDetails(orderDetails);
+
+        return orderDTO;
+
     }
 
 }

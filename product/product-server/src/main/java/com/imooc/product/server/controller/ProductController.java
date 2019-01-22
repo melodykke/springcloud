@@ -1,7 +1,7 @@
 package com.imooc.product.server.controller;
 
 import com.google.common.collect.Lists;
-import com.imooc.product.server.DTO.CartDTO;
+import com.imooc.product.common.DecreaseStockInput;
 import com.imooc.product.server.VO.ProductInfoVO;
 import com.imooc.product.server.VO.ProductVO;
 import com.imooc.product.server.VO.ResultVO;
@@ -78,7 +78,7 @@ public class ProductController {
     }
 
     @PostMapping("/decreaseStock")
-    public void decreaseStock(@RequestBody List<CartDTO> cartDTOs) {
-        productService.decreaseStock(cartDTOs);
+    public void decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList) {
+        productService.decreaseStock(decreaseStockInputList);
     }
 }
